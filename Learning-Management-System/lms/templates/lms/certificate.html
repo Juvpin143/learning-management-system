@@ -1,0 +1,17 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+{% include "lms/certificate_content.html" %}
+
+<div class="text-center mt-4">
+    <a href="{% url 'download_certificate_pdf' certificate.course.id %}"
+       class="btn btn-primary">
+        🖨 Download PDF
+    </a>
+
+    <button onclick="window.print()" class="btn btn-outline-secondary">
+        🖨 Print
+    </button>
+</div>
+
+{% endblock %}

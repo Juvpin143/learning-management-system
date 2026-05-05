@@ -1,0 +1,338 @@
+{% extends "main/base_admin.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .stat-card {
+        border-radius: 18px;
+        padding: 25px;
+        color: white;
+        transition: 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .hero-header {
+        background: linear-gradient(135deg, #4C84FF, #6CA8FF);
+        color: white;
+        border-radius: 14px;
+    }
+
+    .app-card {
+        border-radius: 14px;
+        transition: .2s;
+    }
+    .app-card:hover {
+        background: #f8f9fc;
+        transform: translateX(4px);
+    }
+</style>
+
+<div class="container-fluid py-3 px-4">
+
+
+  <div class="p-4 mb-4 hero-header shadow-sm">
+      <h2 class="fw-bold mb-1">
+        Welcome back, Admin "{{ user.username }}"!
+      </h2>
+      <p class="mb-0">
+        Manage users, teachers, students, and system insights here.
+      </p>
+    </div>
+
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+    </h2>
+  </div>
+
+  <!-- =======================
+       STATS OVERVIEW CARDS
+  ======================== -->
+  <div class="row g-3 mb-4">
+
+      <div class="col-md-3">
+        <div class="stat-card shadow-sm" style="background:#4C84FF;">
+          <i class="bi bi-people-fill fs-1"></i>
+          <h6 class="mt-2">Total Users</h6>
+          <h2>{{ total_users|default:0 }}</h2>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card shadow-sm" style="background:#3BB273;">
+          <i class="bi bi-person-workspace fs-1"></i>
+          <h6 class="mt-2">Teachers</h6>
+          <h2>{{ total_teachers|default:0 }}</h2>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card shadow-sm" style="background:#0DC5F0;">
+          <i class="bi bi-mortarboard-fill fs-1"></i>
+          <h6 class="mt-2">Students</h6>
+          <h2>{{ total_students|default:0 }}</h2>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card shadow-sm" style="background:#FFC107;">
+          <i class="bi bi-journal-bookmark-fill fs-1"></i>
+          <h6 class="mt-2">Courses</h6>
+          <h2>{{ total_courses|default:0 }}</h2>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="stat-card shadow-sm" style="background:#DC3545;">
+          <i class="bi bi-file-earmark-text-fill fs-1"></i>
+          <h6 class="mt-2">Applications</h6>
+          <h2>{{ total_applications|default:0 }}</h2>
+        </div>
+      </div>
+
+    </div>
+
+  <hr class="my-4">
+
+  <!-- =======================
+       TEACHER MANAGEMENT
+  ======================== -->
+  <div class="card shadow-sm border-0 mb-5 app-card">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 fw-semibold"><i class="bi bi-people-fill me-2"></i>Teachers</h5>
+      <form method="get" class="d-flex gap-2 align-items-center">
+        <input type="text" name="q" class="form-control form-control-sm" placeholder="Search teacher..."
+               value="{{ request.GET.q|default:'' }}" style="width: 180px;">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Status</option>
+          <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>Inactive</option>
+        </select>
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="bi bi-funnel me-1"></i>Filter
+        </button>
+      </form>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Date Joined</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for teacher in recent_teachers %}
+          <tr>
+            <td>{{ teacher.username }}</td>
+            <td>{{ teacher.email }}</td>
+            <td>
+              {% if teacher.is_active %}
+                <span class="badge bg-success px-3 py-2">Active</span>
+              {% else %}
+                <span class="badge bg-danger px-3 py-2">Inactive</span>
+              {% endif %}
+            </td>
+            <td>{{ teacher.date_joined|date:"Y-m-d" }}</td>
+            <td class="text-center">
+              <div class="btn-group btn-group-sm" role="group">
+                {% if teacher.is_active %}
+                  <a href="{% url 'adminpanel:deactivate' teacher.id %}" class="btn btn-warning">
+                    <i class="bi bi-person-dash"></i>
+                  </a>
+                {% else %}
+                  <a href="{% url 'adminpanel:activate' teacher.id %}" class="btn btn-success">
+                    <i class="bi bi-person-check"></i>
+                  </a>
+                {% endif %}
+                {% if user.id != request.user.id %}
+                    <a href="{% url 'adminpanel:send-message' teacher.id %}" class="btn btn-info text-white">
+                      <i class="bi bi-envelope"></i>
+                    </a>
+                {% endif %}
+                <a href="{% url 'adminpanel:delete' teacher.id %}"
+                   class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this employer?')">
+                   <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">No teachers found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =======================
+       CHARTS & INSIGHTS
+  ======================== -->
+  <div class="row mb-5 g-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 p-3">
+        <h5><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Students vs Teachers</h5>
+        <canvas id="userPieChart" height="180"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 p-3">
+        <h5><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Top Teachers (Course Posted)</h5>
+        <canvas id="courseBarChart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 mb-5 p-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Applications Over Time</h5>
+      <select id="timeframe" class="form-select form-select-sm w-auto">
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+        <option value="all">All Time</option>
+      </select>
+    </div>
+    <canvas id="applicationsLineChart" class="mt-3" height="120"></canvas>
+  </div>
+
+  <!-- =======================
+       RECENT ACTIVITY
+  ======================== -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-person-lines-fill me-2 text-primary"></i>Recent Applicants
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for applicant in recent_applicants %}
+            <li class="list-group-item">{{ applicant.username }} <small class="text-muted">({{ applicant.email }})</small></li>
+          {% empty %}
+            <li class="list-group-item text-muted">No recent applicants</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light fw-semibold">
+          <i class="bi bi-building me-2 text-primary"></i>Recent Teachers
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for teacher in recent_teachers %}
+            <li class="list-group-item">{{ teacher.username }} <small class="text-muted">({{ teacher.email }})</small></li>
+          {% empty %}
+            <li class="list-group-item text-muted">No recent teachers</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Pie Chart - Applicants vs Teachers
+  new Chart(document.getElementById('userPieChart'), {
+      type: 'pie',
+      data: {
+          labels: ['Students', 'Teachers'],
+          datasets: [{
+              data: [{{ total_students }}, {{ total_teachers }}],
+              backgroundColor: ['#36A2EB', '#FF6384'],
+              borderWidth: 2
+          }]
+      }
+  });
+
+  // Bar Chart - Course per Teacher
+  new Chart(document.getElementById('courseBarChart'), {
+      type: 'bar',
+      data: {
+          labels: {{ teacher_names|safe }},
+          datasets: [{
+              label: 'Course Posted',
+              data: {{ course_counts|safe }},
+              backgroundColor: '#4BC0C0'
+          }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Line Chart - Applications Trend
+  let lineChart;
+
+    function loadApplicationsTrend(timeframe = "7") {
+        fetch("{% url 'adminpanel:applications_trend_data' %}?timeframe=" + timeframe)
+            .then(res => res.json())
+            .then(data => {
+                const ctx = document.getElementById('applicationsLineChart');
+
+                if (!data.dates.length) {
+                    ctx.style.display = "block";
+                    ctx.parentElement.innerHTML +=
+                      "<p class='text-muted text-center mt-3'>No application data available</p>";
+                    return;
+                }
+
+                ctx.style.display = "block";
+
+                if (lineChart) lineChart.destroy();
+
+                lineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: 'Applications',
+                            data: data.applications_count,
+                            fill: true,
+                            borderColor: '#742774',
+                            backgroundColor: 'rgba(116,39,116,0.15)',
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            })
+            .catch(err => console.error("Chart fetch error:", err));
+    }
+
+    loadApplicationsTrend("7");
+
+    document
+        .getElementById("timeframe")
+        .addEventListener("change", e =>
+            loadApplicationsTrend(e.target.value)
+        );
+</script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  .hover-card:hover {
+    transform: translateY(-3px);
+    transition: 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% block content %}
+<div class="container-fluid">
+
+  <!-- ===== Header ===== -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold mb-0">📥 Inbox</h3>
+  </div>
+
+  <!-- ===== Inbox Card ===== -->
+  <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-0">
+
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-uppercase">
+          <tr>
+            <th class="ps-4">From</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th class="text-end pe-4">Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for msg in messages %}
+          <tr class="{% if not msg.is_read %}table-primary fw-semibold{% endif %}">
+            <td class="ps-4">
+              {{ msg.sender.username }}
+            </td>
+
+            <td>
+              <a href="{% url 'adminpanel:message-detail' msg.id %}"
+                 class="text-decoration-none text-dark">
+                {{ msg.subject }}
+              </a>
+            </td>
+
+            <td>
+              <small class="text-muted">
+                {{ msg.created_at|date:"M d, Y H:i" }}
+              </small>
+            </td>
+
+            <td class="text-end pe-4">
+              {% if msg.is_read %}
+                <span class="badge bg-success-subtle text-success border border-success">
+                  Read
+                </span>
+              {% else %}
+                <span class="badge bg-warning-subtle text-warning border border-warning">
+                  Unread
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-center py-4 text-muted">
+              📭 No messages in your inbox
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

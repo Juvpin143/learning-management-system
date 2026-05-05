@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Verify Your Account - LMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f2f5f9;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #2c2c2c;
+    }
+
+    .card {
+      max-width: 600px;
+      background: #ffffff;
+      margin: 40px auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e6e6e6;
+    }
+
+    .top-banner {
+      background: linear-gradient(135deg, #ff7a18, #8e2de2);
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .top-banner img {
+      width: 90px;
+      height: 90px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: white;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    .top-banner h1 {
+      color: #ffffff;
+      font-size: 22px;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .body-content {
+      padding: 35px 30px;
+      text-align: left;
+    }
+
+    .body-content h2 {
+      color: #8e2de2;
+      font-size: 22px;
+      margin-top: 0;
+    }
+
+    .body-content p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #444;
+      margin-bottom: 18px;
+    }
+
+    .verify-btn {
+      display: inline-block;
+      background: #ff7a18;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin: 20px 0;
+      transition: 0.3s ease;
+    }
+
+    .verify-btn:hover {
+      background: #ff5a00;
+    }
+
+    .link-box {
+      background: #f7f7fb;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      word-break: break-all;
+      border: 1px dashed #ccc;
+    }
+
+    .footer {
+      background: #fafafa;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #777;
+      border-top: 1px solid #eee;
+    }
+
+    .footer strong {
+      color: #8e2de2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <!-- ✅ NEW LMS STYLE HEADER -->
+    <div class="top-banner">
+      <img src="cid:lms_logo" alt="LMS Logo">
+      <h1>Learning Management System (LMS)</h1>
+    </div>
+
+    <!-- ✅ BODY -->
+    <div class="body-content">
+      <h2>Hi {{ user.username }} 👋</h2>
+
+      <p>
+        Welcome to <strong>Learning Management System (LMS)</strong>!
+        We're excited to help you start your learning journey with us.
+      </p>
+
+      <p>
+        To complete your registration and secure your account, please verify your email by clicking the button below:
+      </p>
+
+      <center>
+        <a href="{{ activation_link }}" class="verify-btn">Verify My Account</a>
+      </center>
+
+      <p>
+        If the button doesn't work, you may copy and paste this link into your browser:
+      </p>
+
+      <div class="link-box">
+        {{ activation_link }}
+      </div>
+    </div>
+
+    <!-- ✅ FOOTER -->
+    <div class="footer">
+      <p>© 2025 <strong>Learning Management System (LMS)</strong></p>
+      <p>This is an automated email. Please do not reply.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

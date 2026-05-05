@@ -1,0 +1,22 @@
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">📤 Sent Messages</h2>
+
+    <ul class="list-group">
+        {% for msg in messages %}
+            <li class="list-group-item">
+                <a href="{% url 'adminpanel:message-detail' msg.id %}">
+                    <strong>{{ msg.subject|default:"(No Subject)" }}</strong>
+                </a>
+                <br>
+                <small class="text-muted">
+                    To: {{ msg.receiver.username }} |
+                    {{ msg.created_at|date:"M d, Y H:i" }}
+                </small>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No sent messages.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

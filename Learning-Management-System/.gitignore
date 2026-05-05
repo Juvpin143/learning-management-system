@@ -1,0 +1,17 @@
+# Django
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+venv/
+
+# Static & media (optional)
+media/
+staticfiles/
+
+# Gradle / Android (ITO YUNG ERROR MO)
+.gradle/
+build/
+
+# OS
+.DS_Store

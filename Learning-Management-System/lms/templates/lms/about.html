@@ -1,0 +1,97 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}About - Juven LMS{% endblock %}
+
+{% block extra_css %}
+<style>
+  .feature-icon {
+    font-size: 1.6rem;
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.03);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row align-items-center gy-4">
+    <div class="col-lg-6">
+      <h1 class="display-6 fw-bold">About <span class="text-primary">Juven LMS</span></h1>
+      <p class="lead text-muted">A modern, user-friendly Learning Management System built to make online education simple, accessible, and engaging. Learn anytime, anywhere — for students, educators, and lifelong learners.</p>
+
+      <div class="mt-4">
+        <h5 class="mb-2">🎯 Our Mission</h5>
+        <p class="text-muted">Empower learners by providing a modern online learning environment where anyone can access high-quality education anytime, anywhere.</p>
+
+        <h5 class="mb-2 mt-3">🌱 Our Vision</h5>
+        <p class="text-muted">A world where education is open, flexible, and accessible — breaking barriers through technology and meaningful learning experiences.</p>
+      </div>
+
+      <div class="mt-4">
+        <a href="{% url 'course-list' %}" class="btn btn-primary btn-lg me-2">Browse Courses</a>
+        <a href="{% url 'saved' %}" class="btn btn-outline-secondary btn-lg">My Wishlist</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <div class="row g-4 text-center">
+    <div class="col-md-3">
+      <div class="p-3 bg-white rounded shadow-sm h-100">
+        <div class="feature-icon mb-3">📘</div>
+        <h6 class="fw-bold">High-Quality Courses</h6>
+        <p class="text-muted small">Curated content with videos, quizzes and practical activities.</p>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="p-3 bg-white rounded shadow-sm h-100">
+        <div class="feature-icon mb-3">🎥</div>
+        <h6 class="fw-bold">Interactive Lessons</h6>
+        <p class="text-muted small">Engaging modules designed for better retention.</p>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="p-3 bg-white rounded shadow-sm h-100">
+        <div class="feature-icon mb-3">📜</div>
+        <h6 class="fw-bold">Certificates</h6>
+        <p class="text-muted small">Earn digital certificates to showcase your achievements.</p>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="p-3 bg-white rounded shadow-sm h-100">
+        <div class="feature-icon mb-3">👩‍🏫</div>
+        <h6 class="fw-bold">For Educators</h6>
+        <p class="text-muted small">Create, manage, and track courses with ease.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5 align-items-center">
+    <div class="col-md-6">
+      <h4 class="fw-bold">Why choose Juven LMS?</h4>
+      <ul class="list-unstyled text-muted mt-3">
+        <li class="mb-2">• Simple and intuitive interface for distraction-free learning</li>
+        <li class="mb-2">• Accessible on any device</li>
+        <li class="mb-2">• Built with modern web technologies and secure practices</li>
+        <li class="mb-2">• Continuous improvements and responsive support</li>
+      </ul>
+    </div>
+    <div class="col-md-6 text-center">
+      <div class="p-4 bg-white rounded shadow-sm">
+        <h5 class="mb-1">Join our community</h5>
+        <p class="small text-muted mb-3">Whether you want to learn something new or share your knowledge — start your journey with Juven LMS today.</p>
+        <a href="{% url 'course-list' %}" class="btn btn-success">Get Started</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

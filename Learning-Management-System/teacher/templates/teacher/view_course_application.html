@@ -1,0 +1,31 @@
+{% extends 'main/base_teacher.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Application for {{ course.title }}</h2>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Fullname</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Applied At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr>
+                <td>{{ app.user.profile.full_name }}</td>
+                <td>{{ app.user }}</td>
+                <td>{{ app.email }}</td>
+                <td>{{ app.enrolled_at|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No applications for this course.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "main/base_admin.html" %}
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #4C84FF, #6CA8FF);
+        color: white;
+        border-radius: 14px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+    }
+</style>
+
+<!-- ===== Header ===== -->
+<div class="container-fluid">
+  <div class="page-header shadow-sm">
+        <h3 class="fw-bold mb-1">
+            <i class="bi bi-file-earmark-text me-2"></i>👥 User Management
+        </h3>
+        <small>Manage admins, teachers, and students</small>
+  </div>
+
+  <!-- ===== Search & Filter ===== -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+
+        <div class="col-md-4">
+          <label class="form-label small text-muted">Search</label>
+          <input type="text"
+                 name="q"
+                 class="form-control"
+                 placeholder="Search username or email..."
+                 value="{{ request.GET.q }}">
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label small text-muted">Role</label>
+          <select name="role" class="form-select">
+            <option value="">All Roles</option>
+            <option value="admin" {% if request.GET.role == "admin" %}selected{% endif %}>Admin</option>
+            <option value="instructor" {% if request.GET.role == "instructor" %}selected{% endif %}>Teacher</option>
+            <option value="student" {% if request.GET.role == "student" %}selected{% endif %}>Student</option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100">
+            <i class="bi bi-funnel"></i> Filter
+          </button>
+        </div>
+
+        <div class="col-md-2">
+          <a href="{% url 'adminpanel:user_list' %}" class="btn btn-outline-secondary w-100">
+            Reset
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== User Table ===== -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light text-uppercase small">
+          <tr>
+            <th class="ps-4">User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th class="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td class="ps-4">
+              <div class="fw-semibold">{{ user.username }}</div>
+              <small class="text-muted">ID: {{ user.id }}</small>
+            </td>
+
+            <td>{{ user.email }}</td>
+
+            <td>
+              {% if user.is_superuser %}
+                <span class="badge bg-danger">Admin</span>
+              {% elif user.profile.is_instructor %}
+                <span class="badge bg-primary">Teacher</span>
+              {% else %}
+                <span class="badge bg-success">Student</span>
+              {% endif %}
+            </td>
+
+            <td>
+              <small>{{ user.date_joined|date:"M d, Y" }}</small>
+            </td>
+
+            <td>
+              {% if user.is_active %}
+                <span class="badge bg-success-subtle text-success border border-success">
+                  Active
+                </span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger border border-danger">
+                  Inactive
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="text-end pe-4">
+
+              <!-- SEND MESSAGE -->
+              {% if user.id != request.user.id %}
+                <a href="{% url 'adminpanel:send-message' user.id%}"
+                   class="btn btn-sm btn-outline-primary me-1">
+                   📩 Message
+                </a>
+              {% endif %}
+
+              {% if not user.is_superuser %}
+                {% if user.is_active %}
+                  <a href="{% url 'adminpanel:deactivate' user.id %}?next={{ request.path }}"
+                     class="btn btn-sm btn-outline-warning"
+                     title="Deactivate">
+                    Deactivate
+                  </a>
+                {% else %}
+                  <a href="{% url 'adminpanel:activate' user.id %}?next={{ request.path }}"
+                     class="btn btn-sm btn-outline-success"
+                     title="Activate">
+                    Activate
+                  </a>
+                {% endif %}
+
+                <a href="{% url 'adminpanel:delete' user.id %}"
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Delete {{ user.username }}?')">
+                  Delete
+                </a>
+              {% else %}
+                <span class="badge bg-secondary">Protected</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              No users found.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
