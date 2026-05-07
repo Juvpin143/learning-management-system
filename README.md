@@ -87,9 +87,9 @@ A Django-based Learning Management System designed for managing students, teache
 
 ## Teacher dashboard
 ![Homepage](Screenshots/staff.png)
-![Homepage](Screenshots/staf2.png)
-![Homepage](Screenshots/staf3.png)
-![Homepage](Screenshots/staf4.png)
+![Homepage](Screenshots/staff2.png)
+![Homepage](Screenshots/staff3.png)
+![Homepage](Screenshots/staff4.png)
 
 ## Teacher dashboard
 ![Homepage](Screenshots/admin.png)
