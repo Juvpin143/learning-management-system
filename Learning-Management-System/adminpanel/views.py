@@ -302,14 +302,14 @@ def user_list(request):
 
     users = User.objects.select_related("profile")
 
-    # 🔍 Search (username OR email)
+    #  Search (username OR email)
     if query:
         users = users.filter(
             Q(username__icontains=query) |
             Q(email__icontains=query)
         )
 
-    # 🎭 Role filter
+    #  Role filter
     if role == "admin":
         users = users.filter(is_superuser=True)
 
@@ -359,7 +359,6 @@ def sent_messages(request):
         "adminpanel/sent_messages.html",
         {"messages": messages_qs}
     )
-
 
 @login_required
 def message_detail(request, pk):
@@ -419,7 +418,7 @@ def send_message(request, user_id):
             messages.success(request, "Message sent successfully!")
             return redirect("adminpanel:sent-messages")
     else:
-        # ✅ kapag GET, dito na gagawa ng form
+        # kapag GET, dito na gagawa ng form
         form = SendMessageForm()
 
     return render(
