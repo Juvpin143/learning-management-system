@@ -1,0 +1,104 @@
+{% extends "main/base_teacher.html" %}
+{% load static %}
+
+{% block title %}Create Course{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">📘 Create New Course</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Course Title -->
+                        <div class="mb-3">
+                            <label class="form-label">Course Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+
+                        <!-- Subtitle -->
+                        <div class="mb-3">
+                            <label class="form-label">Subtitle</label>
+                            <input type="text" name="subtitle" class="form-control">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" rows="4" class="form-control" required></textarea>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" name="category" class="form-control" placeholder="e.g. Programming">
+                        </div>
+
+                        <!-- Level -->
+                        <div class="mb-3">
+                            <label class="form-label">Level</label>
+                            <select name="level" class="form-select" required>
+                                <option value="">-- Select Level --</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="mb-3">
+                            <label class="form-label">Duration (hours)</label>
+                            <input name="duration" class="form-control" min="1">
+                        </div>
+
+                        <!-- Language -->
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <select name="language" class="form-select">
+                                <option value="English">English</option>
+                                <option value="Filipino">Filipino</option>
+                            </select>
+                        </div>
+
+                        <!-- Promo_video_url -->
+                        <div class="mb-3">
+                            <label class="form-label">Promo Video (YouTube / Vimeo link)</label>
+                            <input
+                                type="url"
+                                name="promo_video_url"
+                                class="form-control"
+                                placeholder="https://www.youtube.com/watch?v=xxxx"
+                            >
+                        </div>
+
+                        <!-- Thumbnail -->
+                        <div class="mb-3">
+                            <label class="form-label">Course Thumbnail</label>
+                            <input type="file" name="thumbnail" class="form-control">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'teacher-dashboard' %}" class="btn btn-secondary">
+                                ⬅ Back
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                ✅ Create Course
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

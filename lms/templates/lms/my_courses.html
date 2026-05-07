@@ -1,0 +1,180 @@
+{% extends "main/base.html" %}
+{% block title %}My Courses{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background: #f5f7fa;
+  }
+
+  .courses-container {
+    max-width: 1100px;
+    margin: 60px auto;
+  }
+
+  .page-title {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #212529;
+  }
+
+  .course-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+  }
+
+  .course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .course-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .course-image {
+      flex-shrink: 0;
+    }
+
+    .course-thumb {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #f1f3f5;
+    }
+
+  .course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .course-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #0d6efd;
+    margin-bottom: 4px;
+  }
+
+  .instructor {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+
+  .status-badge {
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .course-meta {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #495057;
+  }
+
+  .course-meta p {
+    margin-bottom: 6px;
+  }
+
+  .action-btns {
+    margin-top: 15px;
+  }
+
+  .btn-view {
+    border-radius: 30px;
+    font-size: 0.85rem;
+    padding: 6px 16px;
+  }
+
+  .no-courses {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    margin-top: 60px;
+  }
+</style>
+
+<div class="container courses-container">
+  <h2 class="text-center page-title mb-5">My Applications</h2>
+
+  {% if enrollments %}
+    <div class="row g-4">
+      {% for app in enrollments %}
+        <div class="col-12">
+          <div class="course-card">
+            <div class="course-header">
+              <div class="course-image">
+                {% if app.course.thumbnail %}
+                  <img src="{{ app.course.thumbnail.url }}" alt="{{ app.course.title }}" class="course-thumb">
+                {% else %}
+                  <img src="{% static 'images/default-course.jpg' %}" alt="Default Course" class="course-thumb">
+                {% endif %}
+              </div>
+
+              <div class="flex-grow-1">
+                <div class="course-title">{{ app.course.title }}</div>
+                <div class="instructor">
+                  Instructor:
+                  {% if app.course.created_by %}
+                    {% with u=app.course.created_by %}
+                      {{ u.profile.full_name|default:u.username }}
+                    {% endwith %}
+                  {% else %}
+                    Juven Trinidad Pinoy
+                  {% endif %}
+                </div>
+                <div class="enrolled-date">
+                    Enrolled on: {{ app.enrolled_at|date:"M d, Y H:i" }}
+                </div>
+              </div>
+
+              <span class="status-badge
+                {% if app.status == 'approved' %}bg-success text-white
+                {% elif app.status == 'pending' %}bg-warning text-dark
+                {% elif app.status == 'rejected' %}bg-danger text-white
+                {% elif app.status == 'enrolled' %}bg-primary text-white
+                {% elif app.status == 'completed' %}bg-info text-dark
+                {% endif %}
+              ">
+                {{ app.get_status_display }}
+              </span>
+            </div>
+
+            {% if app.resume %}
+              <div class="action-btns">
+                <a href="{{ app.resume.url }}" target="_blank"
+                   class="btn btn-outline-primary btn-sm btn-view">
+                  📄 View Uploaded File
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-courses">
+      <h5 class="fw-semibold">You haven’t enrolled in any courses yet</h5>
+      <p class="text-muted mb-0">
+        Browse available courses and start learning today 🚀
+      </p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'main/base_teacher.html' %}
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .stat-card {
+        border-radius: 18px;
+        padding: 25px;
+        color: white;
+        transition: 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .quick-btn {
+        border-radius: 15px;
+        padding: 18px;
+        transition: .2s;
+    }
+    .quick-btn:hover {
+        background: #f0f4ff;
+        transform: translateY(-3px);
+    }
+
+    .app-card {
+        border-radius: 14px;
+        transition: .2s;
+    }
+    .app-card:hover {
+        background: #f8f9fc;
+        transform: translateX(4px);
+    }
+
+    .timeline {
+        border-left: 3px solid #0d6efd;
+        margin-left: 10px;
+        padding-left: 20px;
+    }
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -11px;
+        background: #0d6efd;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <!-- HERO HEADER -->
+    <div class="p-4 mb-4 rounded shadow-sm" style="background: linear-gradient(135deg, #4C84FF, #6CA8FF); color:white;">
+        <h2 class="fw-bold mb-1">Welcome back, Teacher "{{ user.username }}"!</h2>
+        <p class="mb-0">Manage your courses, applications, and student progress here.</p>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="row mb-4 g-4">
+        <div class="col-md-3">
+            <a href="{% url 'adminpanel:compose-message' %}" class="text-decoration-none text-dark">
+                <div class="quick-btn shadow-sm bg-white text-center">
+                    <i class="bi bi-pen fs-3 text-primary"></i>
+                    <h6 class="mt-2">Compose</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'adminpanel:sent-messages' %}" class="text-decoration-none text-dark">
+                <div class="quick-btn shadow-sm bg-white text-center">
+                    <i class="bi bi-send fs-3 text-primary"></i>
+                    <h6 class="mt-2">Sent</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'adminpanel:inbox' %}" class="text-decoration-none text-dark">
+                <div class="quick-btn shadow-sm bg-white text-center">
+                    <i class="bi bi-inbox fs-3 text-primary"></i>
+                    <h6 class="mt-2">Inbox</h6>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#4C84FF;">
+                <i class="bi bi-journal-bookmark fs-1"></i>
+                <h6 class="mt-2">Courses Posted</h6>
+                <h2>{{ total_courses }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#3BB273;">
+                <i class="bi bi-people-fill fs-1"></i>
+                <h6 class="mt-2">Applications</h6>
+                <h2>{{ total_applications }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#FFC107;">
+                <i class="bi bi-hourglass-split fs-1"></i>
+                <h6 class="mt-2">Pending</h6>
+                <h2>{{ pending_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#0DC5F0;">
+                <i class="bi bi-check2-circle fs-1"></i>
+                <h6 class="mt-2">Approved</h6>
+                <h2>{{ approved_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#6C757D;">
+                <i class="bi bi-person-lines fs-1"></i>
+                <h6 class="mt-2">Enrolled</h6>
+                <h2>{{ enrolled_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#6610F2;">
+                <i class="bi bi-person-check-fill fs-1"></i>
+                <h6 class="mt-2">Completed</h6>
+                <h2>{{ completed_count }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stat-card shadow-sm" style="background:#DC3545;">
+                <i class="bi bi-person-x-fill fs-1"></i>
+                <h6 class="mt-2">Rejected</h6>
+                <h2>{{ rejected_count }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INSIGHTS -->
+    <h4 class="mt-4 mb-3 fw-bold">Insights</h4>
+    <div class="card shadow-sm p-3" style="max-width:600px; margin:auto;">
+        <canvas id="applicationsChart"></canvas>
+    </div>
+
+    <!-- RECENT APPLICATIONS - LIST STYLE -->
+    <h4 class="mt-5 fw-bold">Recent Applications</h4>
+    <div class="list-group shadow-sm">
+        {% for app in recent_applications %}
+            <div class="list-group-item app-card d-flex justify-content-between">
+                <div>
+                    <strong>{{ app.user.profile.full_name }}</strong>
+                    <div class="text-muted small">{{ app.user.username }}</div>
+                    <div class="text-muted small">{{ app.email }}</div>
+                    <div class="mt-1"><em>{{ app.course.title }}</em></div>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary">{{ app.status|title }}</span><br>
+                    <small class="text-muted">{{ app.enrolled_at|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+        {% empty %}
+            <div class="list-group-item text-center">No recent applications</div>
+        {% endfor %}
+    </div>
+
+    <!-- ACTIVITY FEED - TIMELINE -->
+    <h4 class="mt-5 fw-bold">Activity Feed</h4>
+    <div class="timeline">
+        {% for act in activity_feed %}
+            <div class="position-relative mb-3 timeline-item">
+                {% if act.type == "job" %}
+                    <strong>📘 Course Posted:</strong> {{ act.title }}<br>
+                    <small class="text-muted">{{ act.date|date:"M d, Y H:i" }}</small>
+                {% else %}
+                    <strong>📩 Application:</strong> {{ act.applicant }} applied to <em>{{ act.title }}</em><br>
+                    <small class="text-muted">{{ act.date|date:"M d, Y H:i" }}</small>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="text-muted">No recent activity</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    new Chart(document.getElementById('applicationsChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Pending','Approved','Rejected','Enrolled','Completed'],
+            datasets: [{
+                data: [{{ pending_count }}, {{ approved_count }}, {{ rejected_count }}, {{ enrolled_count }}, {{ completed_count }}],
+                backgroundColor: ['#6C757D','#0DC5F0','#DC3545','#3BB273','#6610F2']
+            }]
+        },
+        options: { responsive: true, plugins:{ legend:{ position:'bottom' } } }
+    });
+</script>
+
+{% endblock %}

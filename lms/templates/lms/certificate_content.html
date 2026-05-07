@@ -1,0 +1,197 @@
+{% load static %}
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    .certificate-wrapper {
+        max-width: 900px;
+        margin: 60px auto;
+        padding: 40px;
+    }
+
+    .certificate {
+        background: #ffffff;
+        border: 8px solid #0d6efd;
+        padding: 50px;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        position: relative;
+    }
+
+    .certificate::before {
+        content: "";
+        position: absolute;
+        inset: 15px;
+        border: 2px dashed #0d6efd;
+        border-radius: 10px;
+    }
+
+    .certificate-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .top-banner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .top-banner img {
+        width: 150px;
+        height: 150px;
+        border-radius: 20px;
+        object-fit: contain;
+        background: #ffffff;
+        padding: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        margin-bottom: 12px;
+    }
+
+    .top-banner h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0d6efd;
+        letter-spacing: 1px;
+        margin: 0;
+    }
+
+    .top-banner span {
+        font-size: 14px;
+        color: #6c757d;
+        letter-spacing: 1px;
+    }
+
+    .certificate-title {
+        font-size: 42px;
+        font-weight: 800;
+        color: #0d6efd;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+    }
+
+    .certificate-subtitle {
+        font-size: 18px;
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+
+    .student-name {
+        font-size: 32px;
+        font-weight: 700;
+        color: #212529;
+        margin: 20px 0;
+        text-transform: capitalize;
+    }
+
+    .course-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #0d6efd;
+        margin: 15px 0;
+    }
+
+    .certificate-text {
+        font-size: 16px;
+        color: #495057;
+        margin-top: 10px;
+    }
+
+    .certificate-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 50px;
+    }
+
+    .signature {
+        text-align: center;
+    }
+
+    .signature-line {
+        width: 200px;
+        border-top: 2px solid #000;
+        margin: 8px auto 5px auto;
+    }
+
+    .certificate-meta {
+        text-align: right;
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    @media print {
+        body {
+            background: none;
+        }
+        .certificate-wrapper {
+            margin: 0;
+            padding: 0;
+        }
+        .certificate {
+            box-shadow: none;
+        }
+    }
+</style>
+
+<div class="certificate-wrapper">
+    <div class="certificate">
+        <div class="certificate-content">
+
+            <div class="top-banner">
+                <img src="{% static 'img/lms_logo.png' %}">
+                <h2>Juven LMS</h2>
+                <span>Learning Management System</span>
+            </div>
+
+            <div class="certificate-title">
+                Certificate of Completion
+            </div>
+
+            <div class="certificate-subtitle">
+                This certificate is proudly presented to
+            </div>
+
+            <div class="student-name">
+                {{ user.profile.full_name }}
+            </div>
+
+            <p class="certificate-text">
+                for successfully completing the course
+            </p>
+
+            <div class="course-title">
+                {{ certificate.course.title }}
+            </div>
+
+            <p class="certificate-text">
+                Issued on {{ certificate.issued_at|date:"F d, Y" }}
+            </p>
+
+            <div class="certificate-footer">
+                <div class="signature">
+                    {% if certificate.course.created_by %}
+                        {% with u=certificate.course.created_by %}
+                            {{ u.profile.full_name|default:u.username }}
+                        {% endwith %}
+                    {% else %}
+                        Juven Trinidad Pinoy
+                    {% endif %}
+                    <div class="signature-line"></div>
+                    <strong>Course Instructor</strong>
+                </div>
+
+                <div class="certificate-meta">
+                    <div><strong>Certificate ID:</strong></div>
+                    <div>{{ certificate.certificate_id }}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

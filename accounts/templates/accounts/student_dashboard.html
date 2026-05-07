@@ -1,0 +1,96 @@
+{% extends "main/base.html" %}
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">👋 Welcome Back, {{ request.user.username }}!</h2>
+        <p class="text-muted">Here’s a quick overview of your learning activity.</p>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-primary text-white">
+                <h5 class="mb-1">Courses Enrolled</h5>
+                <h3>{{ activity_feed|length }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-success text-white">
+                <h5 class="mb-1">Saved Courses</h5>
+                <h3>{{ saved_courses|default:0 }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-warning text-white">
+                <h5 class="mb-1">Recommendations</h5>
+                <h3>{{ recommended_course|length }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <h4 class="mt-4 mb-3">🕒 Recent Activity</h4>
+
+    {% if activity_feed %}
+        <div class="list-group mb-5">
+            {% for app in activity_feed %}
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                    <div>
+                        {% if app.type == "application" %}
+                            <span class="badge bg-success me-2">Enrolled</span>
+                            You joined <strong>{{ app.course.title }}</strong>
+                            <span class="badge bg-info ms-2">{{ app.status }}</span>
+
+                        {% elif app.type == "saved" %}
+                            <span class="badge bg-warning me-2">Saved</span>
+                            You saved <strong>{{ app.course.title }}</strong>
+                        {% endif %}
+                    </div>
+
+                    <small class="text-muted">
+                        {{ app.date|date:"M d, Y H:i" }}
+                    </small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No recent activity yet.</p>
+    {% endif %}
+
+
+    <!-- Smart Recommendations -->
+    <h4 class="mt-4 mb-3">🎯 Recommended Courses for You</h4>
+
+    {% if recommended_course %}
+        <div class="row">
+            {% for course in recommended_course %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm h-100 border-0 rounded-4">
+                        {% if course.thumbnail %}
+                            <img src="{{ course.thumbnail.url }}" class="card-img-top rounded-top-4" style="height:160px; object-fit:cover;">
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="text-muted small mb-2">{{ course.level|title }} Level • {{ course.category }}</p>
+
+                            <a href="{% url 'course-detail' course.id %}" class="btn btn-primary w-100">
+                                View Course
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No recommendations yet. Try enrolling or saving more courses!</p>
+    {% endif %}
+</div>
+{% endblock %}

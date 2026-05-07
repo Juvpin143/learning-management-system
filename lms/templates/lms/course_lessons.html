@@ -1,0 +1,138 @@
+{% extends "main/base.html" %}
+{% block content %}
+
+<style>
+    body {
+        background: #f4f6f9;
+    }
+
+    .course-header {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .course-header h3 {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .progress {
+        height: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .lesson-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        margin-bottom: 15px;
+    }
+
+    .lesson-card h5 {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .lesson-actions a {
+        margin-right: 6px;
+        margin-top: 5px;
+    }
+
+    .lesson-number {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0d6efd;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- Course Header -->
+    <div class="course-header">
+        <h3>{{ course.title }}</h3>
+        <small class="text-muted">Course Lessons</small>
+
+        {% if is_enrolled %}
+        <div class="mt-3">
+            <div class="d-flex justify-content-between mb-1">
+                <small>Progress</small>
+                <small>{{ progress_percent }}%</small>
+            </div>
+            <div class="progress">
+                <div class="progress-bar bg-success"
+                     style="width: {{ progress_percent }}%;">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if is_enrolled %}
+
+        {% if progress_percent >= 100 %}
+        <div class="alert alert-success">
+            🎉 <strong>Congratulations!</strong> You’ve completed this course.
+            <a href="{% url 'view-certificate' course.id %}"
+               class="btn btn-success btn-sm ms-2">
+                🎓 View Certificate
+            </a>
+        </div>
+        {% endif %}
+
+        {% for lesson in lessons %}
+        <div class="lesson-card">
+
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="lesson-number">
+                        Lesson {{ lesson.order }}
+                    </span>
+                    <h5>{{ lesson.title }}</h5>
+                    <p class="text-muted mb-2">
+                        {{ lesson.description }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="lesson-actions mt-2">
+                {% if lesson.video_url %}
+                    <a href="{{ lesson.video_url }}"
+                       class="btn btn-sm btn-primary">
+                        ▶ Watch
+                    </a>
+                {% endif %}
+
+                {% if lesson.document %}
+                    <a href="{{ lesson.document.url }}"
+                       class="btn btn-sm btn-outline-secondary">
+                        📄 PDF
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'complete-lesson' lesson.id %}"
+                   class="btn btn-sm btn-success">
+                    ✔ Mark as Completed
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="alert alert-light text-muted">
+            No lessons yet.
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="alert alert-warning">
+            🔒 You must enroll first to access the lessons.
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

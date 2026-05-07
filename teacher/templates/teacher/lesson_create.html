@@ -1,0 +1,38 @@
+{% extends "main/base_teacher.html" %}
+{% block title %}Add Lesson{% endblock %}
+
+{% block content %}
+<h3>Add Lesson - {{ course.title }}</h3>
+
+<form method="post" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label class="form-label">Lesson Title</label>
+        <input type="text" name="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Video URL</label>
+        <input type="url" name="video_url" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Document (PDF)</label>
+        <input type="file" name="document" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Order</label>
+        <input type="number" name="order" class="form-control" value="1">
+    </div>
+
+    <button class="btn btn-success">Save Lesson</button>
+    <a href="{% url 'lesson_list' course.id %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

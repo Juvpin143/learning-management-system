@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+{% block title %}Account Verified{% endblock %}
+
+{% block content %}
+<div class="container text-center" style="padding: 60px;">
+  <div class="card shadow-lg p-5" style="border-radius: 12px;">
+    <h2 class="text-success mb-4">✅ Email Verified!</h2>
+    <p>Your LMS account has been successfully activated.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Go to Login</a>
+  </div>
+</div>
+{% endblock %}

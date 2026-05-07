@@ -1,0 +1,126 @@
+{% extends "main/base_teacher.html" %}
+{% block title %}Applications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📄 Applications for: <span class="text-primary">{{ course.title }}</span></h2>
+        <hr>
+        <a href="{% url 'teacher-dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    <!-- 🔎 Search & Filter Form -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search applicant or course...">
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
+                <option value="approved" {% if app.status == "approved" %}selected{% endif %}>Approved</option>
+                <option value="rejected" {% if status_filter == "rejected" %}selected{% endif %}>Rejected</option>
+                <option value="enrolled" {% if status_filter == "enrolled" %}selected{% endif %}>Enrolled</option>
+                <option value="completed" {% if status_filter == "completed" %}selected{% endif %}>Completed</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="date" value="{{ date_filter }}" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    {% if enrolments  %}
+        <table class="table table-striped shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Fullname</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Date Applied</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in enrolments %}
+                <tr>
+                    <td>{{ app.user.profile.full_name }}</td>
+                    <td>{{ app.user.username }}</td>
+                    <td>{{ app.user.email }}</td>
+                    <td>
+                        <span class="badge status-badge
+                            {% if app.status == 'pending' %} bg-warning
+                            {% elif app.status == 'approved' %} bg-success
+                            {% elif app.status == 'rejected' %} bg-danger
+                            {% elif app.status == 'enrolled' %} bg-info
+                            {% elif app.status == 'completed' %} bg-success
+                            {% else %} bg-secondary {% endif %}">
+                            {{ app.status }}
+                        </span>
+
+                        <select class="form-select form-select-sm mt-1 status-dropdown" data-id="{{ app.id }}">
+                            <option value="pending" {% if app.status == "pending" %}selected{% endif %}>Pending</option>
+                            <option value="approved" {% if app.status == "approved" %}selected{% endif %}>Approved</option>
+                            <option value="rejected" {% if app.status == "rejected" %}selected{% endif %}>Rejected</option>
+                            <option value="enrolled" {% if app.status == "enrolled" %}selected{% endif %}>Enrolled</option>
+                            <option value="completed" {% if app.status == "completed" %}selected{% endif %}>Completed</option>
+                        </select>
+                    </td>
+                    <td>{{ app.enrolled_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="alert alert-info">No applications yet for this course.</p>
+    {% endif %}
+
+    <!-- ✅ JS stays the same -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".status-dropdown").forEach(dropdown => {
+
+            dropdown.addEventListener("change", function() {
+                const appId = this.dataset.id;
+                const newStatus = this.value;
+                const badge = this.closest("td").querySelector(".status-badge");
+
+                fetch(`/teacher/application/${appId}/update-status/`, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: new URLSearchParams({ status: newStatus })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        badge.textContent = data.status;
+                        badge.className = "badge status-badge";
+
+                        const statusColors = {
+                            pending: "bg-warning",
+                            approved: "bg-success",
+                            rejected: "bg-danger",
+                            enrolled: "bg-info",
+                            completed: "bg-success"
+                        };
+
+                        badge.classList.add(statusColors[data.status] || "bg-secondary");
+                    } else {
+                        alert("❌ Error: " + data.error);
+                    }
+                })
+                .catch(() => alert("⚠️ Something went wrong."));
+            });
+
+        });
+    });
+    </script>
+</div>
+{% endblock %}
