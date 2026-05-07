@@ -81,21 +81,21 @@ A Django-based Learning Management System designed for managing students, teache
 ---
 ## 📸 Screenshots
 ## Homepage/Course listing
-![Homepage](screenshots/std.png)
-![Homepage](screenshots/std2.png)
-![Homepage](screenshots/std3.png)
+![Homepage](Screenshots/std.png)
+![Homepage](Screenshots/std2.png)
+![Homepage](Screenshots/std3.png)
 
 ## Teacher dashboard
-![Homepage](screenshots/staff.png)
-![Homepage](screenshots/staf2.png)
-![Homepage](screenshots/staf3.png)
-![Homepage](screenshots/staf4.png)
+![Homepage](Screenshots/staff.png)
+![Homepage](Screenshots/staf2.png)
+![Homepage](Screenshots/staf3.png)
+![Homepage](Screenshots/staf4.png)
 
 ## Teacher dashboard
-![Homepage](screenshots/admin.png)
-![Homepage](screenshots/admin1.png)
-![Homepage](screenshots/admin2.png)
-![Homepage](screenshots/admin3.png)
+![Homepage](Screenshots/admin.png)
+![Homepage](Screenshots/admin1.png)
+![Homepage](Screenshots/admin2.png)
+![Homepage](Screenshots/admin3.png)
 
 # ⚙️ Installation
 
