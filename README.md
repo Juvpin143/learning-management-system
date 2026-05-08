@@ -17,6 +17,7 @@ A Django-based Learning Management System designed for managing students, teache
 - Message Admin/Teachers
 - Sent Messages
 - View Enrolled Courses
+- Save & Unsave Courses
 - Save Courses / Wishlist
 - View About Page
 - Complete Lessons and Generate Certificates Instantly
@@ -42,7 +43,6 @@ A Django-based Learning Management System designed for managing students, teache
   - Approved Applications
   - Pending Applications
   - Rejected Applications
-- Save & Unsave Courses
 - Wishlist / Saved Courses
 - Compose Messages
 - Inbox & Sent Messages
